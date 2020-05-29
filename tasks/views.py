@@ -72,7 +72,4 @@ class TaskDetailsView(DetailView):
 
 @cache_page(300)
 def cached_page(request):
-    return HttpResponse(
-        f'<p>Cached time: {datetime.now().isoformat()}</p>'
-        f'<p>Please wait 5 minutes to update</p>'
-    )
+    return HttpResponse(f"<p>Cached time: {datetime.now().isoformat()}</p><p>Wait 5 minutes to update.</p>")
