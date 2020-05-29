@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Информация по категориям{% endblock %}
+{% block title %}Categories information{% endblock %}
 
 {% block main_content %}
-  <h1>Категории и числа</h1>
-  <ul>
-  {% for cat, count in counts.items %}
-    <li><span class="badge badge-info">{{ cat }}: {{ count }}</span></li>
-  {% empty %}
-    <li>Список задач по категориям пуст. Попробуйте добавить их из админки</li>
-  {% endfor %}
-  </ul>
+    <h1>Categories and numbers</h1>
+    <ul>
+        {% for cat, count in counts.items %}
+            <li><span class="badge badge-info">{{ cat }}: {{ count }}</span></li>
+            <span class="badge badge-info">{{ cat.name }}: {{ count }}</span>
+            <span style="color: orange">{{ cat.high_priority }}</span>
+            <span style="color: yellow">{{ cat.medium_priority }}</span>
+            <span style="color: lightgreen">{{ cat.low_priority }}</span>
+        {% empty %}
+            <li>Your todo list is empty. Please try to add it from the admin page.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
