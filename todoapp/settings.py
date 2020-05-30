@@ -52,7 +52,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'todoapp.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -60,9 +59,7 @@ DATABASES = {
     }
 }
 
-
 LANGUAGE_CODE = 'en-EN'
-
 
 django_heroku.settings(locals())
 
@@ -80,12 +77,33 @@ def get_cache():
         password = os.environ['MEMCACHIER_PASSWORD']
         cache = {
             'default': {
-                'BACKEND': 'django_bmemcached.memcached.BMemcached',
+                'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
                 'TIMEOUT': None,
                 'LOCATION': servers,
                 'OPTIONS': {
+                    'binary': True,
                     'username': username,
                     'password': password,
+                    'behaviors': {
+                        # Enable faster IO
+                        'no_block': True,
+                        'tcp_nodelay': True,
+
+                        # Keep connection alive
+                        'tcp_keepalive': True,
+
+                        # Timeout setting
+                        'connect_timeout': 2000,
+                        'send_timeout': 750 * 1000,
+                        'receive_timeout': 750 * 1000,
+                        '_poll_timeout': 2000,
+
+                        # Better failover
+                        'ketama': True,
+                        'remove_failed': 1,
+                        'retry_timeout': 2,
+                        'dead_timeout': 30,
+                    }
                 }
             }
         }
