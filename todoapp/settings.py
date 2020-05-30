@@ -63,51 +63,59 @@ LANGUAGE_CODE = 'en-EN'
 
 django_heroku.settings(locals())
 
+# def get_cache():
+#     environment_ready = all(
+#         os.environ.get(f'MEMCACHIER_{key}', False)
+#         for key in ['SERVERS', 'USERNAME', 'PASSWORD']
+#     )
+#     if not environment_ready:
+#         cache = {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}
+#     else:
+servers = os.environ['MEMCACHIER_SERVERS']
+username = os.environ['MEMCACHIER_USERNAME']
+password = os.environ['MEMCACHIER_PASSWORD']
 
-def get_cache():
-    environment_ready = all(
-        os.environ.get(f'MEMCACHIER_{key}', False)
-        for key in ['SERVERS', 'USERNAME', 'PASSWORD']
-    )
-    if not environment_ready:
-        cache = {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}
-    else:
-        servers = os.environ['MEMCACHIER_SERVERS']
-        username = os.environ['MEMCACHIER_USERNAME']
-        password = os.environ['MEMCACHIER_PASSWORD']
-        cache = {
-            'default': {
-                'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-                'TIMEOUT': None,
-                'LOCATION': servers,
-                'OPTIONS': {
-                    'binary': True,
-                    'username': username,
-                    'password': password,
-                    'behaviors': {
-                        # Enable faster IO
-                        'no_block': True,
-                        'tcp_nodelay': True,
+CACHES = {
+    'default': {
+        # Use pylibmc
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
 
-                        # Keep connection alive
-                        'tcp_keepalive': True,
+        # TIMEOUT is not the connection timeout! It's the default expiration
+        # timeout that should be applied to keys! Setting it to `None`
+        # disables expiration.
+        'TIMEOUT': None,
 
-                        # Timeout setting
-                        'connect_timeout': 2000,
-                        'send_timeout': 750 * 1000,
-                        'receive_timeout': 750 * 1000,
-                        '_poll_timeout': 2000,
+        'LOCATION': servers,
 
-                        # Better failover
-                        'ketama': True,
-                        'remove_failed': 1,
-                        'retry_timeout': 2,
-                        'dead_timeout': 30,
-                    }
-                }
+        'OPTIONS': {
+            # Use binary memcache protocol (needed for authentication)
+            'binary': True,
+            'username': username,
+            'password': password,
+            'behaviors': {
+                # Enable faster IO
+                'no_block': True,
+                'tcp_nodelay': True,
+
+                # Keep connection alive
+                'tcp_keepalive': True,
+
+                # Timeout settings
+                'connect_timeout': 2000,  # ms
+                'send_timeout': 750 * 1000,  # us
+                'receive_timeout': 750 * 1000,  # us
+                '_poll_timeout': 2000,  # ms
+
+                # Better failover
+                'ketama': True,
+                'remove_failed': 1,
+                'retry_timeout': 2,
+                'dead_timeout': 30,
             }
         }
-    return {'default': cache}
+    }
+}
+# return {'default': cache}
 
 
-CACHES = get_cache()
+# CACHES = get_cache()
