@@ -70,6 +70,6 @@ class TaskDetailsView(DetailView):
     template_name = "tasks/details.html"
 
 
-# @cache_page(300)
-# def cached_page(request):
-#     return HttpResponse(f"<p>Cached time: {datetime.now().isoformat()}</p><p>Wait 5 minutes to update.</p>")
+@cache_page(300)
+def cached_page(request):
+    return HttpResponse(f"<p>Cached time: {datetime.now().isoformat()}</p><p>Wait 5 minutes to update.</p>")
