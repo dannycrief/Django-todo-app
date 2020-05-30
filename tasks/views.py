@@ -8,9 +8,9 @@ from tasks.models import TodoItem, Category
 
 
 def index(request):
-    # counts = Category.objects.all().order_by('-todo_count')
-    # return render(request, "tasks/index.html", {"counts": counts})
-    return redirect('list/', request)
+    counts = Category.objects.all().order_by('-todo_count')
+    return render(request, "tasks/index.html", {"counts": counts})
+    # return redirect('list/', request)
 
 
 def filter_tasks(tags_by_task):
