@@ -6,12 +6,12 @@
 {% block main_content %}
     <h1>Categories and numbers</h1>
     <ul>
-        {% for cat, count in counts.items %}
-            <li><span class="badge badge-info">{{ cat }}: {{ count }}</span></li>
+        {% for cat in counts %}
+            <li><span class="badge badge-info">{{ cat }}: {{ cat.todo_count }}</span></li>
             <span class="badge badge-info">{{ cat.name }}: {{ count }}</span>
-            <span style="color: orange">{{ cat.high_priority }}</span>
-            <span style="color: yellow">{{ cat.medium_priority }}</span>
-            <span style="color: lightgreen">{{ cat.low_priority }}</span>
+            <span style="color: red">High priority ({{ cat.high_priority }})</span>
+            <span style="color: yellow">Medium priority ({{ cat.medium_priority }})</span>
+            <span style="color: lightgreen">Low priority ({{ cat.low_priority }})</span>
         {% empty %}
             <li>Your todo list is empty. Please try to add it from the admin page.</li>
         {% endfor %}
