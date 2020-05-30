@@ -121,4 +121,4 @@ def get_cache():
 
 CACHES = get_cache()
 
-# COMPRESS_CACHE_BACKEND = 'compressor'
+COMPRESS_CACHE_BACKEND = 'compressor'
